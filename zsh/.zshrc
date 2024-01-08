@@ -77,7 +77,7 @@ source $ZSH/oh-my-zsh.sh
 ## User configuration
 
 # ZSH History
-export HISTSIZE=3000
+export HISTSIZE=30000
 SAVEHIST=$HISTSIZE
 HISTFILE=${ZDOTDIR:-$HOME}/.zsh_history
 setopt HIST_EXPIRE_DUPS_FIRST
@@ -100,6 +100,18 @@ eval "$(pyenv init -)"
 alias mangaocr="/home/gin/.local/bin/manga_ocr /home/gin/Pictures/mangaocr/"
 # export MANPATH="/usr/local/man:$MANPATH"
 
+function start_tmux() {
+    if type tmux &> /dev/null; then
+        #Only start tmux if the terminal is konsole
+        TERMINAL_EMULATOR="$(ps --pid $(ps --pid $$ -o ppid=) -o comm=)"
+        #if not inside a tmux session, and if no session is started, start a new session
+        if [[ $HOST == "Monogatari" && $TERMINAL_EMULATOR == "konsole" && -z "$TMUX" && -z $TERMINAL_CONTEXT ]]; then
+            (tmux -2 attach -t gin || tmux -2 new-session)
+        fi
+    fi
+}
+start_tmux
+
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
@@ -109,4 +121,3 @@ alias mangaocr="/home/gin/.local/bin/manga_ocr /home/gin/Pictures/mangaocr/"
 # else
 #   export EDITOR='mvim'
 # fi
-
